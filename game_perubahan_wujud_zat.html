@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Game Perubahan Wujud Zat dan Energi</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f0f8ff;
+        text-align: center;
+        padding: 20px;
+      }
+      h1 {
+        color: #2e8b57;
+      }
+      #score {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+      .draggable {
+        padding: 10px 15px;
+        background-color: #ffcccb;
+        border: 2px solid #d9534f;
+        border-radius: 8px;
+        cursor: grab;
+        width: 120px;
+      }
+      .droppable {
+        padding: 20px;
+        background-color: #d0e6ff;
+        border: 2px dashed #0275d8;
+        border-radius: 8px;
+        width: 200px;
+        min-height: 60px;
+      }
+      .correct {
+        background-color: #d4edda !important;
+        border-color: #28a745 !important;
+      }
+      .incorrect {
+        background-color: #f8d7da !important;
+        border-color: #dc3545 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Petualangan Perubahan Wujud Zat dan Energi</h1>
+    <div id="score">Skor: 0 / 100</div>
+
+    <div class="container" id="draggables">
+      <div class="draggable" draggable="true" id="Mencair_Es">Mencair (Es)</div>
+      <div class="draggable" draggable="true" id="Membeku_Air">
+        Membeku (Air)
+      </div>
+      <div class="draggable" draggable="true" id="Menguap_Air">
+        Menguap (Air)
+      </div>
+      <div class="draggable" draggable="true" id="Mengembun_Uap">
+        Mengembun (Uap)
+      </div>
+      <div class="draggable" draggable="true" id="Menyublim_Kapur">
+        Menyublim (Kapur Barus)
+      </div>
+      <div class="draggable" draggable="true" id="Mengendapan_Uap">
+        Mengendapan (Uap)
+      </div>
+      <div class="draggable" draggable="true" id="Mencair_Lilin">
+        Mencair (Lilin)
+      </div>
+      <div class="draggable" draggable="true" id="Membeku_Lilin">
+        Membeku (Lilin)
+      </div>
+      <div class="draggable" draggable="true" id="Mencair_Logam">
+        Mencair (Logam)
+      </div>
+      <div class="draggable" draggable="true" id="Energi_Panas">
+        Energi Panas
+      </div>
+    </div>
+
+    <div class="container" id="droppables">
+      <div class="droppable" data-match="Mencair_Es">
+        Es berubah menjadi air
+      </div>
+      <div class="droppable" data-match="Membeku_Air">Air menjadi es</div>
+      <div class="droppable" data-match="Menguap_Air">Air menjadi uap</div>
+      <div class="droppable" data-match="Mengembun_Uap">Uap menjadi air</div>
+      <div class="droppable" data-match="Menyublim_Kapur">
+        Kapur barus menghilang
+      </div>
+      <div class="droppable" data-match="Mengendapan_Uap">
+        Uap menjadi padat
+      </div>
+      <div class="droppable" data-match="Mencair_Lilin">Lilin meleleh</div>
+      <div class="droppable" data-match="Membeku_Lilin">Lilin mengeras</div>
+      <div class="droppable" data-match="Mencair_Logam">Logam meleleh</div>
+      <div class="droppable" data-match="Energi_Panas">
+        Energi panas diperlukan
+      </div>
+    </div>
+
+    <script>
+      let score = 0;
+      const maxScore = 100;
+      const scoreDisplay = document.getElementById("score");
+
+      document.querySelectorAll(".draggable").forEach((elem) => {
+        elem.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", e.target.id);
+        });
+      });
+
+      document.querySelectorAll(".droppable").forEach((zone) => {
+        zone.addEventListener("dragover", (e) => e.preventDefault());
+        zone.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const draggedId = e.dataTransfer.getData("text/plain");
+          const matchId = zone.getAttribute("data-match");
+
+          if (draggedId === matchId && !zone.classList.contains("correct")) {
+            zone.classList.add("correct");
+            zone.textContent += " ✔";
+            document.getElementById(draggedId).style.visibility = "hidden";
+            if (score < maxScore) {
+              score += 10;
+              if (score > maxScore) score = maxScore;
+              scoreDisplay.textContent = `Skor: ${score} / ${maxScore}`;
+            }
+          } else {
+            zone.classList.add("incorrect");
+            setTimeout(() => zone.classList.remove("incorrect"), 1000);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
